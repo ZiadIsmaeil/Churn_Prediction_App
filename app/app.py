@@ -1,14 +1,9 @@
-
 import streamlit as st
 import pandas as pd
 import joblib
 import json
 from pathlib import Path
 
-
-# --------------------------------------------------
-# Page Configuration
-# --------------------------------------------------
 
 st.set_page_config(
     page_title="Customer Churn Prediction",
@@ -17,17 +12,13 @@ st.set_page_config(
 )
 
 
-# --------------------------------------------------
-# Load Model and Threshold
-# --------------------------------------------------
-
 @st.cache_resource
 def load_model():
 
-    # Project root:
-    # E:\customer_churn_prediction
+    # Project folder:
+    # E:\customer_churn_prediction\Churn_Prediction_App
 
-    project_root = Path(__file__).resolve().parents[2]
+    project_root = Path(__file__).resolve().parents[1]
 
     model_path = project_root / "models" / "churn_model.pkl"
     threshold_path = project_root / "models" / "threshold.json"
@@ -43,10 +34,6 @@ def load_model():
 model, threshold = load_model()
 
 
-# --------------------------------------------------
-# Page Header
-# --------------------------------------------------
-
 st.title("📊 Customer Churn Prediction")
 
 st.markdown(
@@ -59,15 +46,9 @@ st.markdown(
 
 st.divider()
 
-
-# --------------------------------------------------
-# Customer Information
-# --------------------------------------------------
-
 st.subheader("Customer Information")
 
 col1, col2, col3 = st.columns(3)
-
 
 with col1:
 
@@ -162,11 +143,6 @@ with col3:
 
 st.divider()
 
-
-# --------------------------------------------------
-# Additional Services
-# --------------------------------------------------
-
 st.subheader("Additional Services")
 
 col1, col2, col3 = st.columns(3)
@@ -235,9 +211,15 @@ with col3:
     )
 
 
-# --------------------------------------------------
-# Prediction
-# --------------------------------------------------
+st.divider()
+
+st.subheader("Billing")
+
+paperless_billing = st.selectbox(
+    "Paperless Billing",
+    ["Yes", "No"]
+)
+
 
 st.divider()
 
@@ -249,62 +231,34 @@ if st.button(
 ):
 
     customer_data = pd.DataFrame({
-
         "SeniorCitizen": [senior_citizen],
-
         "tenure": [tenure],
-
         "MonthlyCharges": [monthly_charges],
-
         "TotalCharges": [total_charges],
-
         "gender": [gender],
-
         "Partner": [partner],
-
         "Dependents": [dependents],
-
         "PhoneService": [phone_service],
-
         "MultipleLines": [multiple_lines],
-
         "InternetService": [internet_service],
-
         "OnlineSecurity": [online_security],
-
         "OnlineBackup": [online_backup],
-
         "DeviceProtection": [device_protection],
-
         "TechSupport": [tech_support],
-
         "StreamingTV": [streaming_tv],
-
         "StreamingMovies": [streaming_movies],
-
         "Contract": [contract],
-
-        "PaperlessBilling": ["Yes"],
-
+        "PaperlessBilling": [paperless_billing],
         "PaymentMethod": [payment_method]
     })
 
-
-    # Get churn probability
     probability = model.predict_proba(
         customer_data
     )[0][1]
 
-
-    # Apply saved threshold
     prediction = int(
         probability >= threshold
     )
-
-
-    # --------------------------------------------------
-    # Prediction Result
-    # --------------------------------------------------
 
     st.divider()
 
@@ -312,20 +266,34 @@ if st.button(
 
     result_col1, result_col2 = st.columns(2)
 
+
     with result_col1:
+
         st.metric(
             "Churn Probability",
             f"{probability:.1%}"
         )
 
+
     with result_col2:
+
         if prediction == 1:
-            st.error("⚠️ Customer is likely to churn")
+
+            st.error(
+                "⚠️ Customer is likely to churn"
+            )
+
         else:
-            st.success("✅ Customer is unlikely to churn")
 
-    # Probability bar
-    st.progress(float(probability))
+            st.success(
+                "✅ Customer is unlikely to churn"
+            )
 
-    st.caption("Prediction threshold: {:.2f}".format(threshold))
 
+    st.progress(
+        float(probability)
+    )
+
+    st.caption(
+        f"Prediction threshold: {threshold:.2f}"
+    )
