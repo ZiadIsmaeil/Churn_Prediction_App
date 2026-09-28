@@ -758,7 +758,7 @@ with tab_explainability:
         if difference < 1e-5:
 
             st.success(
-                "✓ SHAP explanation is mathematically consistent "
+                " SHAP explanation is mathematically consistent "
                 "with the model output."
             )
 
@@ -893,12 +893,5 @@ with tab_model:
     )
 
 
-# ============================================================
-# FOOTER
-# ============================================================
 
-st.divider()
 
-st.caption(
-    "Customer Churn Intelligence • Machine Learning + Explainable AI"
-)
