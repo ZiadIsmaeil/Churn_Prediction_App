@@ -378,19 +378,15 @@ A production system would require additional validation, monitoring, data qualit
 
 Potential improvements include:
 
-- Hyperparameter optimization
 - Cross-validation
-- Probability calibration
 - MLflow experiment tracking
 - FastAPI model serving
 - Docker deployment
 - Cloud deployment
 - Automated model retraining
-- Data drift detection
 - Model monitoring
 - Customer segmentation
 - Business-cost-based threshold optimization
-- Integration with CRM or retention workflows
 
 ## 🎯 Project Objective
 
